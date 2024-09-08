@@ -11,7 +11,7 @@ public class Entrypoint implements LimelightEntrypoint {
 
 	@Override
 	public void registerExtensions(Consumer<LimelightExtension> extensionRegistry) {
-		extensionRegistry.accept(CustomHudExtension.INSTANCE);
+		extensionRegistry.accept(TagsExtension.INSTANCE);
 	}
 
 }

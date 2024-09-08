@@ -1,6 +1,8 @@
 {
-  "limelightExtension.customhud_limelight_integration.customhud": "CustomHud",
-  "limelightExtension.customhud_limelight_integration.customhud.desc": "Allows you to use customhud expressions/elements!",
-  "limelightExtension.customhud_limelight_integration.customhud.error": "Error",
-  "limelightExtension.customhud_limelight_integration.customhud.error.desc": "A CustomHud error"
+  "limelightExtension.limelight_tags.header": "LimeTags",
+  "limelightExtension.limelight_tags.header.desc": "Allows you to see what entries are in this tag",
+  "limelightExtension.limelight_tags.entry": "•",
+  "limelightExtension.limelight_tags.entry.desc": "[LimeTags] An entry in the written tag",
+  "limelightExtension.limelight_tags.suggestion.desc": "[LimeTags] Select to see the entries in this tag"
+
 }
