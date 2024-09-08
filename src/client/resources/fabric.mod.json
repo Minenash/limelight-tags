@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "customhud_limelight_integration",
+	"version": "${version}",
+	"name": "CustomHud Limelight Integration",
+	"description": "Allows the use of customhud expressions/elements in Limelight",
+	"authors": [
+		"Minenash"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/Minenash/customhud-limelight-integration"
+	},
+	"license": "MIT",
+	"icon": "assets/modid/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"limelight": [
+			"com.minenash.customhud_limelight_integration.Entrypoint"
+		]
+	},
+	"mixins": [
+		"modid.mixins.json"
+	],
+	"depends": {
+		"fabricloader": "*",
+		"minecraft": ">=1.21",
+		"fabric-api": "*"
+	}
+}

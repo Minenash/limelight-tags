@@ -1,0 +1,6 @@
+{
+  "limelightExtension.customhud_limelight_integration.customhud": "CustomHud",
+  "limelightExtension.customhud_limelight_integration.customhud.desc": "Allows you to use customhud expressions/elements!",
+  "limelightExtension.customhud_limelight_integration.customhud.error": "Error",
+  "limelightExtension.customhud_limelight_integration.customhud.error.desc": "A CustomHud error"
+}
