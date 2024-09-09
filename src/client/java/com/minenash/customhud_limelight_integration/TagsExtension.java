@@ -6,16 +6,16 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntryList;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 import org.apache.commons.lang3.text.WordUtils;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class TagsExtension implements LimelightExtension {
-    public static final Identifier ID = Identifier.of("limelight_tags", "entry");
+    public static final Identifier ID = Identifier.of("limelight_tags", "main");
     public static final TagsExtension INSTANCE = new TagsExtension();
 
     @Override
@@ -32,79 +32,42 @@ public class TagsExtension implements LimelightExtension {
         Identifier id = Identifier.tryParse(text);
         if (id == null) return null;
 
-        String fText = text;
-        return (ctx1, entryConsumer) -> {
+        List<ResultEntry> equalEntries = new ArrayList<>();
+        List<ResultEntry> suggestEntries = new ArrayList<>();
 
-            List<ResultEntry> entries = new ArrayList<>();
-            Set<Identifier> suggestionsSet = new HashSet<>();
-            List<Pair<String,Identifier>> suggestions = new ArrayList<>();
-            for (Registry<?> registry : Registries.REGISTRIES) {
-                List<Identifier> results = new ArrayList<>();
-                for (var tag : registry.streamTagsAndEntries().toList()) {
-                    Identifier tagId = tag.getFirst().id();
-                    if (tagId.equals(id)) {
-                        for (var ahh : tag.getSecond().stream().toList()) {
-                            var key = ahh.getKey();
-                            if (key.isPresent())
-                                results.add(key.get().getValue());
-                        }
+        for (Registry<?> registry : Registries.REGISTRIES) {
+            for (var tag : registry.streamTagsAndEntries().toList()) {
+                Identifier registryID = registry.getKey().getValue();
+                Identifier tagId = tag.getFirst().id();
+
+                if (tagId.equals(id))
+                    equalEntries.add(new TagResultEntry(registryID, tagId, tag.getSecond()));
+                else {
+                    String ns = tagId.getNamespace();
+                    String path = tagId.getPath();
+                    if (path.startsWith(text) || (!ns.equals("minecraft") && ns.startsWith(text)) ) {
+                        suggestEntries.add(new TagResultEntry(registryID, tagId, tag.getSecond()));
                     }
-                    else  {
-                        String ns = tagId.getNamespace();
-                        String path = tagId.getPath();
-                        if (path.startsWith(fText) || (!ns.equals("minecraft") && ns.startsWith(fText)) ) {
-                            if (!suggestionsSet.contains(tagId)) {
-                                suggestions.add(new Pair<>(getRegistryName(registry.getKey().getValue()), tagId));
-                                suggestionsSet.add(tagId);
-                            }
-                        }
-
-                    }
-                }
-
-                if (!results.isEmpty()) {
-                    entries.add(new TagResultHeader(registry.getKey().getValue()));
-                    for (var e : results)
-                        entries.add(new TagResultEntry(e));
                 }
             }
-            for (var s : suggestions)
-                entryConsumer.accept(new TagSuggestion(s));
-            for (var e : entries)
-                entryConsumer.accept(e);
+        }
 
+        return (ctx1, entryConsumer) -> {
+            for (var entry : equalEntries)
+                entryConsumer.accept(entry);
+            for (var entry : suggestEntries)
+                entryConsumer.accept(entry);
         };
     }
 
-
-    public static class Header implements LimelightExtension {
-        public static final Identifier ID = Identifier.of("limelight_tags", "header");
-        public static final Header INSTANCE = new Header();
-
-        @Override
-        public Identifier id() {
-            return ID;
+    public static List<ResultEntry> getTagEntries(RegistryEntryList.Named<?> list) {
+        List<ResultEntry> entries = new ArrayList<>();
+        for (var entry : list.stream().toList()) {
+            var key = entry.getKey();
+            if (key.isPresent())
+                entries.add(new TagResultChildEntry(key.get().getValue()));
         }
-    }
-    public record TagResultHeader(Identifier result) implements InvokeResultEntry {
-
-        @Override
-        public LimelightExtension extension() {
-            return Header.INSTANCE;
-        }
-
-        @Override
-        public String entryId() {
-            return UUID.randomUUID().toString();
-        }
-
-        @Override
-        public Text text() {
-            return Text.literal(getRegistryName(result));
-        }
-
-        @Override
-        public void run() {}
+        return entries;
     }
 
     public static String getRegistryName(Identifier result) {
@@ -115,39 +78,16 @@ public class TagsExtension implements LimelightExtension {
         return ns + ": " + path + " Tag";
     }
 
-    public record TagResultEntry(Identifier result) implements InvokeResultEntry {
-
-        @Override
-        public LimelightExtension extension() {
-            return INSTANCE;
-        }
-
-        @Override
-        public String entryId() {
-            return UUID.randomUUID().toString();
-        }
-
-        @Override
-        public Text text() {
-            return Text.literal(result.getNamespace().equals("minecraft") ? result.getPath() : result().toString());
-        }
-
-        @Override
-        public void run() {
-            MinecraftClient.getInstance().setScreen(new ChatScreen(result.toString()));
-        }
-    }
-
-
-    public static class TagSuggestion implements SetSearchTextEntry {
-        public static final Identifier ID = Identifier.of("limelight_tags", "suggestion");
-
+    public static class TagResultEntry implements ExpandableResultEntry {
+        public static final Identifier ID = Identifier.of("limelight_tags", "header");
         public final String type;
         public final String text;
-        public TagSuggestion(Pair<String,Identifier> result) {
-            Identifier id = result.getRight();
-            text = "#" + (id.getNamespace().equals("minecraft") ? id.getPath() : id.toString());
-            type = result.getLeft();
+        public final List<ResultEntry> entries;
+
+        public TagResultEntry(Identifier registry, Identifier tag, RegistryEntryList.Named<?> list) {
+            text = "#" + (tag.getNamespace().equals("minecraft") ? tag.getPath() : tag.toString());
+            type = getRegistryName(registry);
+            this.entries = getTagEntries(list);
         }
 
         @Override
@@ -160,7 +100,7 @@ public class TagsExtension implements LimelightExtension {
 
         @Override
         public String entryId() {
-            return UUID.randomUUID().toString();
+            return text;
         }
 
         @Override
@@ -169,8 +109,36 @@ public class TagsExtension implements LimelightExtension {
         }
 
         @Override
-        public String newSearchText() {
-            return text;
+        public List<ResultEntry> children() {
+            return entries;
+        }
+    }
+
+    public static class EntryExtension implements LimelightExtension {
+        public static final EntryExtension INSTANCE = new EntryExtension();
+        public static final Identifier ID = Identifier.of("limelight_tags", "entry");
+        @Override public Identifier id() { return ID; }
+    }
+    public record TagResultChildEntry(Identifier result) implements InvokeResultEntry {
+
+        @Override
+        public LimelightExtension extension() {
+            return EntryExtension.INSTANCE;
+        }
+
+        @Override
+        public String entryId() {
+            return result.toString();
+        }
+
+        @Override
+        public Text text() {
+            return Text.literal(result.getNamespace().equals("minecraft") ? result.getPath() : result().toString());
+        }
+
+        @Override
+        public void run() {
+            MinecraftClient.getInstance().setScreen(new ChatScreen(result.toString()));
         }
     }
 }
