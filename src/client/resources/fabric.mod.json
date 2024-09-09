@@ -11,7 +11,7 @@
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/Minenash/customhud-limelight-integration"
 	},
-	"license": "MIT",
+	"license": "LGPL-3.0-only",
 	"icon": "assets/modid/icon.png",
 	"environment": "*",
 	"entrypoints": {
