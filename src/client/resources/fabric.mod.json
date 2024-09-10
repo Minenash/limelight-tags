@@ -1,30 +1,38 @@
 {
 	"schemaVersion": 1,
-	"id": "customhud_limelight_integration",
+	"id": "limelight_tags",
 	"version": "${version}",
-	"name": "CustomHud Limelight Integration",
-	"description": "Allows the use of customhud expressions/elements in Limelight",
+	"name": "Limelight Tags",
+	"description": "Allows you to see what entries are in a #tag in Limelight",
 	"authors": [
 		"Minenash"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/Minenash/customhud-limelight-integration"
+		"homepage": "https://modrinth.com/project/limelight-tags",
+		"sources": "https://github.com/Minenash/limelight-tags",
+		"issues": "https://github.com/Minenash/limelight-tags/issues"
 	},
 	"license": "LGPL-3.0-only",
-	"icon": "assets/modid/icon.png",
-	"environment": "*",
+	"icon": "assets/limelight_tags/icon.png",
+	"environment": "client",
 	"entrypoints": {
 		"limelight": [
-			"com.minenash.customhud_limelight_integration.Entrypoint"
+			"com.minenash.limelight_tags.Entrypoint"
 		]
 	},
-	"mixins": [
-		"modid.mixins.json"
-	],
 	"depends": {
 		"fabricloader": "*",
 		"minecraft": ">=1.21",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"limelight": ">=0.1.2"
+	},
+	"custom": {
+		"modmenu": {
+			"parent": "limelight",
+			"links": {
+				"modmenu.discord": "https://discord.gg/fqwmUsDQSt",
+				"modmenu.kofi": "https://ko-fi.com/minenash"
+			}
+		}
 	}
 }

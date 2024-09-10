@@ -1,6 +1,6 @@
 {
   "limelightExtension.limelight_tags.extension": "Limelight Tags",
-  "limelightExtension.limelight_tags.extension.desc": "Allows you to see what entries are in a tag",
+  "limelightExtension.limelight_tags.extension.desc": "Allows you to see what entries are in a #tag",
   "limelightExtension.limelight_tags.extension.prefix": "•"
 
 }

@@ -1,4 +1,4 @@
-package com.minenash.customhud_limelight_integration;
+package com.minenash.limelight_tags;
 
 import io.wispforest.limelight.api.entry.*;
 import io.wispforest.limelight.api.extension.LimelightExtension;

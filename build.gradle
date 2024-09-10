@@ -45,14 +45,14 @@ dependencies {
 		exclude module: "fabric-api"
 	}
 
-//	modCompileOnly "io.wispforest:limelight:${project.limelight_version}"
-//	modLocalRuntime "io.wispforest:limelight:${project.limelight_version}"
-	modCompileOnly files("${project.local_limelight_filepath}")
-	modLocalRuntime files("${project.local_limelight_filepath}")
+	modCompileOnly "io.wispforest:limelight:${project.limelight_version}"
+	modLocalRuntime "io.wispforest:limelight:${project.limelight_version}"
+//	modCompileOnly files("${project.local_limelight_filepath}")
+//	modLocalRuntime files("${project.local_limelight_filepath}")
 	
 }
 
-processResources {
+processClientResources {
 	inputs.property "version", project.version
 
 	filesMatching("fabric.mod.json") {
