@@ -45,7 +45,8 @@ public class TagsExtension implements LimelightExtension {
                 else {
                     String ns = tagId.getNamespace();
                     String path = tagId.getPath();
-                    if (path.startsWith(text) || (!ns.equals("minecraft") && ns.startsWith(text)) ) {
+                    if (path.startsWith(text) || (!ns.equals("minecraft") && ns.startsWith(text))
+                    || (text.length() > 2 && path.contains(text))) {
                         suggestEntries.add(new TagResultEntry(registryID, tagId, tag.getSecond()));
                     }
                 }
