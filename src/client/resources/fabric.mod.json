@@ -28,7 +28,6 @@
 	},
 	"custom": {
 		"modmenu": {
-			"parent": "limelight",
 			"links": {
 				"modmenu.discord": "https://discord.gg/fqwmUsDQSt",
 				"modmenu.kofi": "https://ko-fi.com/minenash"
